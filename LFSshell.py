@@ -207,7 +207,7 @@ def main():
         elif command[:7] == "newuser":
             shell_newuser(command)
         else:
-            print("Command not found")
+            os.system(command)
 
 
 if '__main__' == __name__:
