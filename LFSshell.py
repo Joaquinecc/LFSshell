@@ -21,6 +21,15 @@ def get_paths(paths):
         return False
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_creatdir(path):
+    #Funcion  para crear carpetas
+    try:
+        os.mkdir(path) #Creamos el directorio
+        print("Directorio {} creado".format(path))
+    except OSError as error:
+        print(error)
+    except:
+        invalid_parameter()
 
 def shell_list(path):
     #Funcion que simula el comando ls
@@ -123,6 +132,8 @@ def main():
             shell_rename(command[7:])
         elif command[:4] == "list":
             shell_list(command[5:])
+        elif command[:9] == "createdir":
+            shell_creatdir(command[10:])
         else:
             print("Command not found")
 
