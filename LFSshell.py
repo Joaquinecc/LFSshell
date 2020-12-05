@@ -21,6 +21,15 @@ def get_paths(paths):
         return False
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_cd(path):
+    #Funcion para mudar de directorio
+    try:
+        os.chdir(path) #Nos mudadmos de directorio
+    except OSError as error:
+        print(error)
+    except:
+        invalid_parameter()
+
 def shell_creatdir(path):
     #Funcion  para crear carpetas
     try:
@@ -120,8 +129,10 @@ def shell_copy(args):
 
 def main():
     print("Shell start")
+
     while True:
-        command = input("shell-$ ")
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        command = input("{} $".format(dir_path))
         if command == "exit":
             break
         elif command[:4] == "copy":
@@ -134,6 +145,8 @@ def main():
             shell_list(command[5:])
         elif command[:9] == "createdir":
             shell_creatdir(command[10:])
+        elif command[:2] == "cd":
+            shell_cdnamecd (command[3:])
         else:
             print("Command not found")
 
