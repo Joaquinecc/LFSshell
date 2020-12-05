@@ -21,6 +21,16 @@ def get_paths(paths):
         return False
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_chewn(args):
+    #Funcion para cambiar el propertario de un archivo o funcion
+    args=args.replace("chewn","chown",1)
+    try:
+        os.system(args) #Cambiamos de propetiario
+    except OSError as error:
+        print(error)
+    except:
+        invalid_parameter()
+
 def shell_chmod(args):
     #Funcion para cambiar los permisos sobre un archivo o un conjunto de archivos
     args=get_paths(args)
@@ -164,6 +174,8 @@ def main():
             shell_cd(command[3:])
         elif command[:5] == "chmod":
             shell_chmod (command[6:])
+        elif command[:5] == "chewn":
+            shell_chewn(command)
         else:
             print("Command not found")
 
