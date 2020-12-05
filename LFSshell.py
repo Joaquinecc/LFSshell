@@ -1,8 +1,12 @@
 import shutil
 import os
-
+import getpass
 #--------------------------------------------------------------------------
 #External Function
+def write_data_user(data,username):
+    f = open("/var/log/personaldata/data_{0}.log".format(username), "a")
+    f.write(data)
+    f.close()
 def invalid_parameter():
         print("invalid parameter")
 
@@ -21,6 +25,30 @@ def get_paths(paths):
         return False
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_newuser(command):
+    #Comando para crear usuarios
+    #args=adduser <USERNAME> <HORARIO DE ENTRADA-HORARIO DE SALIDA> <IP1>-<IP2>...
+    #EJEMPLO:adduser lfsuser 09:00-16:00 192.168.0.3-193.4.5.1.4
+    args=command
+    args=args.split(" ")
+    try:
+        username=args[1]
+        timerange=args[2]
+        locations=args[3]
+        data="{0}\n{1}".format(timerange,locations)
+        try:
+            os.system("sudo useradd {}".format(username))
+            print("user {0} created".format(username))
+            write_data_user(data,username)
+        except OSError as error:
+            print(error)
+    except:
+        try:
+            command='sudo '+command
+            os.system(command.replace('newuser','useradd',1))
+        except OSError as error:
+            print(error)
+
 def shell_chewn(args):
     #Funcion para cambiar el propertario de un archivo o funcion
     args=args.replace("chewn","chown",1)
@@ -176,6 +204,8 @@ def main():
             shell_chmod (command[6:])
         elif command[:5] == "chewn":
             shell_chewn(command)
+        elif command[:7] == "newuser":
+            shell_newuser(command)
         else:
             print("Command not found")
 
