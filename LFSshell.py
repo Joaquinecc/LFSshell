@@ -1,25 +1,34 @@
 import shutil
-def shell_copy(parameters):
-    #Funcion que simula el comando copiar
-    #Obtenemos los parametros
+def get_paths(paths):
+        #Obtenemos los path de los parametros
     try:
-        paths=parameters.split(" ") #separamos los parametros
+        paths=paths.split(" ") #separamos los parametros
         src=paths[0] 
         dest=paths[1]
+        return [dest,src]
     except IndexError: 
-        print("Missing parameter")
-        return
+        print("Missing the dest parameter")
+        return False
     except:
-        print("Error ocured")
+        print("Invalid parameter")
+        return False
+
+def shell_copy(parameters):
+    #Funcion que simula el comando copiar
     #Hacemos la copia
+    paths=get_paths(parameters)
+    if paths == False :
+        return False
+    src=paths[0] 
+    dest=paths[1]
     try:
         new_path=shutil.copy(src,dest)
         print("copy {0} --> {1}".format(src,new_path))
     except FileNotFoundError:
         #File does not exist
-        print("File Source does not exist")
+        print("File Source {0} does not exist".format(src))
     except:
-        print("Invalid parameter)
+        print("Invalid parameter")
 
 
 def main():
