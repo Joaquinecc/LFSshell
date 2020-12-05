@@ -5,22 +5,41 @@ def get_paths(paths):
         paths=paths.split(" ") #separamos los parametros
         src=paths[0] 
         dest=paths[1]
-        return [dest,src]
+        return [src,dest]
     except IndexError: 
-        print("Missing the dest parameter")
+        print("Missing parameter")
         return False
     except:
         print("Invalid parameter")
         return False
-
-def shell_copy(parameters):
-    #Funcion que simula el comando copiar
-    #Hacemos la copia
-    paths=get_paths(parameters)
+def shell_move(args):
+    #Funcion que simula el movimiento de archivos a directorios
+    #Obtenemos los paths
+    paths=get_paths(args)
     if paths == False :
         return False
     src=paths[0] 
     dest=paths[1]
+    #Executamos el movimientode archivo
+    try:
+        new_path=shutil.move(src,dest)
+        print("Move {0} --> {1}".format(src,new_path))
+    except FileNotFoundError:
+        #File does not exist
+        print("File Source {0} does not exist".format(src))
+    except:
+        print("Invalid parameter")
+
+
+def shell_copy(args):
+    #Funcion que simula el comando copiar
+    #obtenemos los paths
+    paths=get_paths(args)
+    if paths == False :
+        return False
+    src=paths[0] 
+    dest=paths[1]
+    #Hacemos la copia
     try:
         new_path=shutil.copy(src,dest)
         print("copy {0} --> {1}".format(src,new_path))
@@ -39,6 +58,8 @@ def main():
             break
         elif command[:4] == "copy":
             shell_copy(command[5:])
+        elif command[:4] == "move":
+            shell_move(command[5:])
         else:
             print("Command not found")
 
@@ -46,4 +67,5 @@ def main():
 if '__main__' == __name__:
     main()
 
-shutil.copy("test/test1","")
+# shutil.move("test/test1","test2")
+#move test/test1
