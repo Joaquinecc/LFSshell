@@ -1,5 +1,11 @@
 import shutil
 import os
+
+#--------------------------------------------------------------------------
+#External Function
+def invalid_parameter():
+        print("invalid parameter")
+
 def get_paths(paths):
         #Obtenemos los path de los parametros
     try:
@@ -13,7 +19,23 @@ def get_paths(paths):
     except:
         print("Invalid parameter")
         return False
+#----------------------------------------------------------------------------
+#Comands Function
+
+def shell_list(path):
+    #Funcion que simula el comando ls
+    try:
+        dirs=os.listdir(path) #Obtenemos todos los  directorio del path
+        for dir in dirs: #Como retorna un array hacemos un llop y impirmimos
+            print(dir)
+    except OSError as error:
+        print(error)
+    except:
+        invalid_parameter()
 def shell_rename(args):
+    #Funcion que especificamene modifica el nombre de un directorio
+
+
     #Obtenemos los paths
     paths=get_paths(args)
     if paths == False :
@@ -99,6 +121,8 @@ def main():
             shell_move(command[5:])
         elif command[:6] == "rename":
             shell_rename(command[7:])
+        elif command[:4] == "list":
+            shell_list(command[5:])
         else:
             print("Command not found")
 
