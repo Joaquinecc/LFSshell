@@ -21,6 +21,21 @@ def get_paths(paths):
         return False
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_chmod(args):
+    #Funcion para cambiar los permisos sobre un archivo o un conjunto de archivos
+    args=get_paths(args)
+    if args == False :
+        return False
+    mode=args[0]
+    path=args[1]
+    command='chmod {0} {1}'.format(mode,path)
+    try:
+        os.system(command) #Nos mudadmos de directorio
+    except OSError as error:
+        print(error)
+    except:
+        invalid_parameter()
+
 def shell_cd(path):
     #Funcion para mudar de directorio
     try:
@@ -146,7 +161,9 @@ def main():
         elif command[:9] == "createdir":
             shell_creatdir(command[10:])
         elif command[:2] == "cd":
-            shell_cdnamecd (command[3:])
+            shell_cd(command[3:])
+        elif command[:5] == "chmod":
+            shell_chmod (command[6:])
         else:
             print("Command not found")
 
