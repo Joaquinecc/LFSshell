@@ -54,6 +54,13 @@ def get_paths(paths):
         return False
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_newpasswd(command):
+    command=command.replace("newpasswd","passwd",1)
+    command='sudo '+command
+    try:
+        os.system(command)
+    except OSError as error:
+        print(error)
 def shell_newuser(command):
     #Comando para crear usuarios
     #args=adduser <USERNAME> <HORARIO DE ENTRADA-HORARIO DE SALIDA> <IP1>-<IP2>...
@@ -236,6 +243,8 @@ def main():
             shell_chewn(command)
         elif command[:7] == "newuser":
             shell_newuser(command)
+        elif command[:9] == "newpasswd":
+            shell_newpasswd(command)
         elif command[:6] == "logout":
             check_user(username,"logout")
         else:
