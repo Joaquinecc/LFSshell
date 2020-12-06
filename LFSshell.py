@@ -53,8 +53,24 @@ def get_paths(paths):
     except:
         print("Invalid parameter")
         return False
+def write_transfer_log(command):
+    #Funcion para escribir la transferencia ocurrida
+    date=datetime.datetime.now().strftime("(%Y-%m-%d %H:%M:%S)") #obtenemos el dia con su hora
+    f = open("/var/log/Shell_transferencias.log", "a") # abrimos el archivo
+    f.write("{0} - {1}\n".format(date,command)) #Cargamos los datos
+    f.close() #Cerramos
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_transfer(command):
+    #Ejecutar transferencia
+    log=command
+    command=command.replace('transfer','scp',1)
+    try:
+        os.system(command) #Ejecutamos
+        write_transfer_log(log) #Escribmos en el log la accion ocurrida
+    except OSError as error:
+        print(error)
+
 def shell_demon(state,service):
     #Funcion para apagar y prender servicios
     if state == 'up':
@@ -62,7 +78,8 @@ def shell_demon(state,service):
             p=Popen(["service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #Corre el servicio
             print(p)
         except OSError as error:
-    elif state== 'down':
+            print(error)
+    elif state == 'down':
         try:
             p=Popen(["service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
         except OSError as error:
@@ -267,6 +284,8 @@ def main():
             break
         elif command[:5] == "demon":
             shell_demon(command[5:7],command[7:])
+        elif command[:8]== "transfer":
+            shell_transfer(command)
         else:
             os.system(command)
 
@@ -276,3 +295,4 @@ if '__main__' == __name__:
 
 # shutil.move("test/test1","test2")
 #move test/test1
+# transfer lp1-2018@127.0.0.1:/home/lp1-2018/Escritorio/LFSSehll/LFSshell/test2 test/namels
