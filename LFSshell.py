@@ -55,10 +55,26 @@ def get_paths(paths):
         return False
 def write_transfer_log(command):
     #Funcion para escribir la transferencia ocurrida
-    date=datetime.datetime.now().strftime("(%Y-%m-%d %H:%M:%S)") #obtenemos el dia con su hora
-    f = open("/var/log/Shell_transferencias.log", "a") # abrimos el archivo
-    f.write("{0} - {1}\n".format(date,command)) #Cargamos los datos
-    f.close() #Cerramos
+    try:
+        date=datetime.datetime.now().strftime("(%Y-%m-%d %H:%M:%S)") #obtenemos el dia con su hora
+        f = open("/var/log/Shell_transferencias.log", "a") # abrimos el archivo
+        f.write("{0} - {1}\n".format(date,command)) #Cargamos los datos
+        f.close() #Cerramos
+    except OSError as error:
+        print(error)
+    except:
+        print("Error al escribir en el transfer log")
+def write_commands_log(command):
+    try:
+        #Funcion para escribir en log todos los comando ejecutados
+        date=datetime.datetime.now().strftime("(%Y-%m-%d %H:%M:%S)") #obtenemos el dia con su hora
+        f = open("/var/log/shell/shell.log", "a") # abrimos el archivo
+        f.write("{0} - {1} - {2}\n".format(date,getpass.getuser(),command)) #Cargamos los datos
+        f.close() #Cerramos
+    except OSError as error:
+        print(error)
+    except:
+        print("Error al escribir en el command log")
 #----------------------------------------------------------------------------
 #Comands Function
 def shell_transfer(command):
@@ -68,6 +84,7 @@ def shell_transfer(command):
     try:
         os.system(command) #Ejecutamos
         write_transfer_log(log) #Escribmos en el log la accion ocurrida
+        write_commands_log(log)
     except OSError as error:
         print(error)
 
@@ -76,12 +93,13 @@ def shell_demon(state,service):
     if state == 'up':
         try:
             p=Popen(["service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #Corre el servicio
-            print(p)
+            write_commands_log("demon"+state+" "+service)            
         except OSError as error:
             print(error)
     elif state == 'down':
         try:
             p=Popen(["service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
+            write_commands_log("demon"+state+" "+service)            
         except OSError as error:
             print(error) 
     else:
@@ -89,10 +107,12 @@ def shell_demon(state,service):
 
 
 def shell_newpasswd(command):
+    params=command
     command=command.replace("newpasswd","passwd",1)
     command='sudo '+command
     try:
         os.system(command)
+        write_commands_log(params)
     except OSError as error:
         print(error)
 def shell_newuser(command):
@@ -110,6 +130,7 @@ def shell_newuser(command):
             os.system("sudo useradd {}".format(username))
             print("user {0} created".format(username))
             write_data_user(data,username)
+            write_commands_log(command)
         except OSError as error:
             print(error)
     except:
@@ -121,9 +142,11 @@ def shell_newuser(command):
 
 def shell_chewn(args):
     #Funcion para cambiar el propertario de un archivo o funcion
+    command=args
     args=args.replace("chewn","chown",1)
     try:
         os.system(args) #Cambiamos de propetiario
+        write_commands_log(command)
     except OSError as error:
         print(error)
     except:
@@ -131,6 +154,7 @@ def shell_chewn(args):
 
 def shell_chmod(args):
     #Funcion para cambiar los permisos sobre un archivo o un conjunto de archivos
+    params=args
     args=get_paths(args)
     if args == False :
         return False
@@ -139,6 +163,7 @@ def shell_chmod(args):
     command='chmod {0} {1}'.format(mode,path)
     try:
         os.system(command) #Nos mudadmos de directorio
+        write_commands_log("chmod "+params)
     except OSError as error:
         print(error)
     except:
@@ -148,6 +173,7 @@ def shell_cd(path):
     #Funcion para mudar de directorio
     try:
         os.chdir(path) #Nos mudadmos de directorio
+        write_commands_log('cd '+path)
     except OSError as error:
         print(error)
     except:
@@ -158,6 +184,7 @@ def shell_creatdir(path):
     try:
         os.mkdir(path) #Creamos el directorio
         print("Directorio {} creado".format(path))
+        write_commands_log('createdir '+path)
     except OSError as error:
         print(error)
     except:
@@ -169,6 +196,7 @@ def shell_list(path):
         dirs=os.listdir(path) #Obtenemos todos los  directorio del path
         for dir in dirs: #Como retorna un array hacemos un llop y impirmimos
             print(dir)
+        write_commands_log('list '+path)
     except OSError as error:
         print(error)
     except:
@@ -201,6 +229,7 @@ def shell_rename(args):
     try:
         os.rename(src,new_path)
         print("Rename {0} --> {1}".format(src,new_path))
+        write_commands_log("reanme "+args)
     # except FileNotFoundError:
     #     print('No such file: {0}'.format(src))
     except IsADirectoryError:
@@ -224,12 +253,12 @@ def shell_move(args):
     try:
         new_path=shutil.move(src,dest)
         print("Move {0} --> {1}".format(src,new_path))
+        write_commands_log('move '+ args)
     except FileNotFoundError:
         #File does not exist
         print("File Source {0} does not exist".format(src))
     except:
         print("Invalid parameter")
-
 
 def shell_copy(args):
     #Funcion que simula el comando copiar
@@ -243,6 +272,7 @@ def shell_copy(args):
     try:
         new_path=shutil.copy(src,dest)
         print("copy {0} --> {1}".format(src,new_path))
+        write_commands_log("copy "+args)
     except FileNotFoundError:
         #File does not exist
         print("File Source {0} does not exist".format(src))
@@ -281,6 +311,7 @@ def main():
             shell_newpasswd(command)
         elif command[:6] == "logout":
             check_user(username,"logout")
+            write_commands_log("logout")
             break
         elif command[:5] == "demon":
             shell_demon(command[5:7],command[7:])
@@ -288,7 +319,6 @@ def main():
             shell_transfer(command)
         else:
             os.system(command)
-
 
 if '__main__' == __name__:
     main()
