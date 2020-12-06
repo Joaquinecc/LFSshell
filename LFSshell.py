@@ -1,15 +1,44 @@
 import shutil
 import os
 import getpass
+import socket
+import datetime
 #--------------------------------------------------------------------------
 #External Function
 def write_data_user(data,username):
-    f = open("/var/log/personaldata/data_{0}.log".format(username), "a")
+    f = open("/var/log/personaldata/{0}_data.log".format(username), "a")
     f.write(data)
     f.close()
 def invalid_parameter():
         print("invalid parameter")
-
+def check_user(username,state):
+    #Primero obtenemos us datos personales
+    try:
+        f = open("/var/log/personaldata/{0}_data.log".format(username), "r")
+        hours=f.readline().strip().split('-') #con strip removemos todo los  caracteres blanco 
+        valid_ip=f.readline().strip().split('-')
+        f.close()
+    except OSError as error:
+        print(error)
+        return
+    
+    current_ip = socket.gethostbyname(socket.gethostname()) #obtenemos el ip address del usuario
+    now = datetime.datetime.now().strftime("%H:%M") #Obtenemos el tiempo del usuario
+    #REGISTRAMOS EN LOG
+    try:
+        f = open("/var/log/shell/usuario_horarios_log", "a")
+        f.write("{0} {1} {2} {3}\n".format(now,state,username,current_ip)) #Escribimo el ingreso o salida del usuario
+        #Checkear si el usuario ingreso fuera de su horario
+        #Formateamos el horario
+        horario_de_entrada=hours[0] if len(hours[0]) == 5 else '0'+ hours[0]
+        horario_de_salida=hours[1] if len(hours[1]) == 5 else '0'+ hours[1]
+        now=now if len(now)== 5 else '0'+now
+        if(horario_de_entrada>now or horario_de_salida<now): #si esta fuera de rango el  ingreso o salida del usuario
+            f.write("Fuera del horario regular en ubicacion:{0} \n".format(current_ip))
+        f.close()
+    except OSError as error:
+        print(error)
+        return
 def get_paths(paths):
         #Obtenemos los path de los parametros
     try:
@@ -182,7 +211,8 @@ def shell_copy(args):
 
 def main():
     print("Shell start")
-
+    username=getpass.getuser()
+    check_user(username,"login")
     while True:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         command = input("{} $".format(dir_path))
@@ -206,6 +236,8 @@ def main():
             shell_chewn(command)
         elif command[:7] == "newuser":
             shell_newuser(command)
+        elif command[:6] == "logout":
+            check_user(username,"logout")
         else:
             os.system(command)
 
