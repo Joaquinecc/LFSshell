@@ -3,6 +3,7 @@ import os
 import getpass
 import socket
 import datetime
+from subprocess import Popen, PIPE
 #--------------------------------------------------------------------------
 #External Function
 def write_data_user(data,username):
@@ -54,6 +55,22 @@ def get_paths(paths):
         return False
 #----------------------------------------------------------------------------
 #Comands Function
+def shell_demon(state,service):
+    #Funcion para apagar y prender servicios
+    if state == 'up':
+        try:
+            p=Popen(["service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #Corre el servicio
+            print(p)
+        except OSError as error:
+    elif state== 'down':
+        try:
+            p=Popen(["service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
+        except OSError as error:
+            print(error) 
+    else:
+        print("invalid command: try demonup or demondw")
+
+
 def shell_newpasswd(command):
     command=command.replace("newpasswd","passwd",1)
     command='sudo '+command
@@ -247,6 +264,9 @@ def main():
             shell_newpasswd(command)
         elif command[:6] == "logout":
             check_user(username,"logout")
+            break
+        elif command[:5] == "demon":
+            shell_demon(command[5:7],command[7:])
         else:
             os.system(command)
 
