@@ -75,6 +75,18 @@ def write_commands_log(command):
         print(error)
     except:
         print("Error al escribir en el command log")
+
+def write_error_log(error):
+    try:
+        #Funcion para escribir en log todos los errores ocurrido
+        date=datetime.datetime.now().strftime("(%Y-%m-%d %H:%M:%S)") #obtenemos el dia con su hora
+        f = open("/var/log/shell/sistema_error.log", "a") # abrimos el archivo
+        f.write("{0} - {1} - {2}\n".format(date,getpass.getuser(),error)) #Cargamos los datos
+        f.close() #Cerramos
+    except OSError as error:
+        print(error)
+    except:
+        print("Error al escribir en el command log")
 #----------------------------------------------------------------------------
 #Comands Function
 def shell_transfer(command):
@@ -87,21 +99,24 @@ def shell_transfer(command):
         write_commands_log(log)
     except OSError as error:
         print(error)
+        write_error_log(error)
 
 def shell_demon(state,service):
     #Funcion para apagar y prender servicios
     if state == 'up':
         try:
-            p=Popen(["service", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #Corre el servicio
+            p=Popen(["systemctl", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #Corre el servicio
             write_commands_log("demon"+state+" "+service)            
         except OSError as error:
             print(error)
+            write_error_log(error)
     elif state == 'down':
         try:
             p=Popen(["service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
             write_commands_log("demon"+state+" "+service)            
         except OSError as error:
             print(error) 
+            write_error_log(error)
     else:
         print("invalid command: try demonup or demondw")
 
@@ -115,6 +130,7 @@ def shell_newpasswd(command):
         write_commands_log(params)
     except OSError as error:
         print(error)
+        write_error_log(error)
 def shell_newuser(command):
     #Comando para crear usuarios
     #args=adduser <USERNAME> <HORARIO DE ENTRADA-HORARIO DE SALIDA> <IP1>-<IP2>...
@@ -133,12 +149,14 @@ def shell_newuser(command):
             write_commands_log(command)
         except OSError as error:
             print(error)
+            write_error_log(error)
     except:
         try:
             command='sudo '+command
             os.system(command.replace('newuser','useradd',1))
         except OSError as error:
             print(error)
+            write_error_log(error)
 
 def shell_chewn(args):
     #Funcion para cambiar el propertario de un archivo o funcion
@@ -149,6 +167,7 @@ def shell_chewn(args):
         write_commands_log(command)
     except OSError as error:
         print(error)
+        write_error_log(error)
     except:
         invalid_parameter()
 
@@ -166,6 +185,7 @@ def shell_chmod(args):
         write_commands_log("chmod "+params)
     except OSError as error:
         print(error)
+        write_error_log(error)
     except:
         invalid_parameter()
 
@@ -176,6 +196,7 @@ def shell_cd(path):
         write_commands_log('cd '+path)
     except OSError as error:
         print(error)
+        write_error_log(error)
     except:
         invalid_parameter()
 
@@ -187,6 +208,7 @@ def shell_creatdir(path):
         write_commands_log('createdir '+path)
     except OSError as error:
         print(error)
+        write_error_log(error)
     except:
         invalid_parameter()
 
@@ -199,6 +221,7 @@ def shell_list(path):
         write_commands_log('list '+path)
     except OSError as error:
         print(error)
+        write_error_log(error)
     except:
         invalid_parameter()
 def shell_rename(args):
@@ -233,11 +256,16 @@ def shell_rename(args):
     # except FileNotFoundError:
     #     print('No such file: {0}'.format(src))
     except IsADirectoryError:
-        print ("new name = {0} is a directory".format(new_name))
+        error="new name = {0} is a directory".format(new_name)
+        print(error)
+        write_error_log(error)
     except NotADirectoryError:
-        print ("src = {0} is a directory".format(src))
+        error="src = {0} is a directory".format(src)
+        print(error)
+        write_error_log(error)
     except OSError as error:
         print(error)
+        write_error_log(error)
     except:
         print("Invalid parameter")
 
@@ -256,7 +284,9 @@ def shell_move(args):
         write_commands_log('move '+ args)
     except FileNotFoundError:
         #File does not exist
-        print("File Source {0} does not exist".format(src))
+        error="File Source {0} does not exist".format(src)
+        print(error)
+        write_error_log(error)
     except:
         print("Invalid parameter")
 
@@ -275,7 +305,9 @@ def shell_copy(args):
         write_commands_log("copy "+args)
     except FileNotFoundError:
         #File does not exist
-        print("File Source {0} does not exist".format(src))
+        error="File Source {0} does not exist".format(src)
+        print(error)
+        write_error_log(error)
     except:
         print("Invalid parameter")
 
