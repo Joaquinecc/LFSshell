@@ -7,7 +7,7 @@ from subprocess import Popen, PIPE
 #--------------------------------------------------------------------------
 #External Function
 def write_data_user(data,username):
-    f = open("/var/log/personaldata/{0}_data.log".format(username), "a")
+    f = open("/var/log/personaldata/{0}_data.log".format(username), "a") #Abre o crea si es necesario
     f.write(data)
     f.close()
 def invalid_parameter():
@@ -15,7 +15,7 @@ def invalid_parameter():
 def check_user(username,state):
     #Primero obtenemos us datos personales
     try:
-        f = open("/var/log/personaldata/{0}_data.log".format(username), "r")
+        f = open("/var/log/personaldata/{0}_data.log".format(username), "r") #Accedemos a lo
         hours=f.readline().strip().split('-') #con strip removemos todo los  caracteres blanco 
         valid_ip=f.readline().strip().split('-')
         f.close()
@@ -123,7 +123,8 @@ def shell_demon(state,service):
 
 def shell_newpasswd(command):
     params=command
-    command=command.replace("newpasswd","passwd",1)
+    command=command.replace("contraseña","passwd",1)
+    command=command.replace("contrasena","passwd",1)
     command='sudo '+command
     try:
         os.system(command)
@@ -153,7 +154,7 @@ def shell_newuser(command):
     except:
         try:
             command='sudo '+command
-            os.system(command.replace('newuser','useradd',1))
+            os.system(command.replace('usuario','useradd',1))
         except OSError as error:
             print(error)
             write_error_log(error)
@@ -161,7 +162,7 @@ def shell_newuser(command):
 def shell_chewn(args):
     #Funcion para cambiar el propertario de un archivo o funcion
     command=args
-    args=args.replace("chewn","chown",1)
+    args=args.replace("propietario","chown",1)
     try:
         os.system(args) #Cambiamos de propetiario
         write_commands_log(command)
@@ -174,15 +175,17 @@ def shell_chewn(args):
 def shell_chmod(args):
     #Funcion para cambiar los permisos sobre un archivo o un conjunto de archivos
     params=args
-    args=get_paths(args)
-    if args == False :
-        return False
-    mode=args[0]
-    path=args[1]
-    command='chmod {0} {1}'.format(mode,path)
+    # args=get_paths(args)
+    # if args == False :
+    #     return False
+    # mode=args[0]
+    # path=args[1]
+    # command='chmod {0} {1}'.format(mode,path)
+    command = args.replace('permiso','chmod',1)
+    print
     try:
         os.system(command) #Nos mudadmos de directorio
-        write_commands_log("chmod "+params)
+        write_commands_log("permiso "+params)
     except OSError as error:
         print(error)
         write_error_log(error)
@@ -193,7 +196,7 @@ def shell_cd(path):
     #Funcion para mudar de directorio
     try:
         os.chdir(path) #Nos mudadmos de directorio
-        write_commands_log('cd '+path)
+        write_commands_log('ir '+path)
     except OSError as error:
         print(error)
         write_error_log(error)
@@ -205,7 +208,7 @@ def shell_creatdir(path):
     try:
         os.mkdir(path) #Creamos el directorio
         print("Directorio {} creado".format(path))
-        write_commands_log('createdir '+path)
+        write_commands_log('creadir '+path)
     except OSError as error:
         print(error)
         write_error_log(error)
@@ -218,7 +221,7 @@ def shell_list(path):
         dirs=os.listdir(path) #Obtenemos todos los  directorio del path
         for dir in dirs: #Como retorna un array hacemos un llop y impirmimos
             print(dir)
-        write_commands_log('list '+path)
+        write_commands_log('listar '+path)
     except OSError as error:
         print(error)
         write_error_log(error)
@@ -251,8 +254,8 @@ def shell_rename(args):
 
     try:
         os.rename(src,new_path)
-        print("Rename {0} --> {1}".format(src,new_path))
-        write_commands_log("reanme "+args)
+        print("renombrar {0} --> {1}".format(src,new_path))
+        write_commands_log("renombrar "+args)
     # except FileNotFoundError:
     #     print('No such file: {0}'.format(src))
     except IsADirectoryError:
@@ -281,7 +284,7 @@ def shell_move(args):
     try:
         new_path=shutil.move(src,dest)
         print("Move {0} --> {1}".format(src,new_path))
-        write_commands_log('move '+ args)
+        write_commands_log('mover '+ args)
     except FileNotFoundError:
         #File does not exist
         error="File Source {0} does not exist".format(src)
@@ -301,11 +304,14 @@ def shell_copy(args):
     #Hacemos la copia
     try:
         new_path=shutil.copy(src,dest)
-        print("copy {0} --> {1}".format(src,new_path))
-        write_commands_log("copy "+args)
-    except FileNotFoundError:
-        #File does not exist
-        error="File Source {0} does not exist".format(src)
+        print("copiar {0} --> {1}".format(src,new_path))
+        write_commands_log("copiar "+args)
+    # except FileNotFoundError:
+    #     #File does not exist
+    #     error="File Source {0} does not exist".format(src)
+    #     print(error)
+    #     write_error_log(error)
+    except OSError as error:
         print(error)
         write_error_log(error)
     except:
@@ -321,25 +327,25 @@ def main():
         command = input("{} $".format(dir_path))
         if command == "exit":
             break
-        elif command[:4] == "copy":
-            shell_copy(command[5:])
-        elif command[:4] == "move":
-            shell_move(command[5:])
-        elif command[:6] == "rename":
-            shell_rename(command[7:])
-        elif command[:4] == "list":
-            shell_list(command[5:])
-        elif command[:9] == "createdir":
-            shell_creatdir(command[10:])
-        elif command[:2] == "cd":
+        elif command[:6] == "copiar":
+            shell_copy(command[7:])
+        elif command[:5] == "mover":
+            shell_move(command[6:])
+        elif command[:9] == "renombrar":
+            shell_rename(command[10:])
+        elif command[:6] == "listar":
+            shell_list(command[7:] if len(command)>6 else '.')
+        elif command[:7] == "creadir":
+            shell_creatdir(command[8:])
+        elif command[:2] == "ir":
             shell_cd(command[3:])
-        elif command[:5] == "chmod":
-            shell_chmod (command[6:])
-        elif command[:5] == "chewn":
+        elif command[:7] == "permiso":
+            shell_chmod (command)
+        elif command[:11] == "propietario":
             shell_chewn(command)
-        elif command[:7] == "newuser":
+        elif command[:7] == "usuario":
             shell_newuser(command)
-        elif command[:9] == "newpasswd":
+        elif command[:10] == "contrasena" or command[:10] == "contraseña":
             shell_newpasswd(command)
         elif command[:6] == "logout":
             check_user(username,"logout")
@@ -358,3 +364,4 @@ if '__main__' == __name__:
 # shutil.move("test/test1","test2")
 #move test/test1
 # transfer lp1-2018@127.0.0.1:/home/lp1-2018/Escritorio/LFSSehll/LFSshell/test2 test/namels
+#transfer test2/name hola3@127.0.0.1:/home/lp1-2018/Escritorio/LFSSehll/LFSshell/test/a
