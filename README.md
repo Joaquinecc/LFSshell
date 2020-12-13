@@ -22,4 +22,4 @@ cd LFSshell
 ./LFSShell
 
 Para que sea el shell por defecto de un usuario se debe configurar el archivo /etc/passwd <br/>
-En la linea del usuario la ultima seccion se indica el shell, modificarlo por el  <directorio>/LFSshell.py
+En la linea del usuario la ultima seccion se indica el shell, modificarlo por el  "directorio"/LFSshell.py
