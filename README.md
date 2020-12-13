@@ -34,10 +34,19 @@ En la linea del usuario la ultima seccion se indica el shell, modificarlo por el
 **permisos**       Simula a 'chmod'. <br/>
 **propietario**       Simula a 'chown'. <br/>
 **contrasena**       Simula a 'passwd'. <br/>
-**usuario**       Simula a 'useradd' con informacion del timempo de ingreso y salida, y tambine sus ubicaciones.  EJEMPLO:adduser lfsuser 09:00-16:00 192.168.0.3-193.4.5.1.4. En forma general usuario USERNAME HORARIO DE ENTRADA-HORARIO DE SALIDA IP1-IP2-.. <br/>
+**usuario**       Simula a 'useradd' con informacion del timempo de ingreso y salida, y tambine sus ubicaciones. <br/>
+EJEMPLO:usuario lfsuser 09:00-16:00 192.168.0.3-193.4.5.1.4.<br/>
+En forma general usuario USERNAME HORARIO DE ENTRADA-HORARIO DE SALIDA IP1-IP2-.. <br/>
 **exit**       Equivalente a 'exit'. <br/>
 **demonup**    Levanta un demonio<br/>
 **demondw**      Apaga un demonio<br/>
 **transfer**       Simula scp<br/>
+
+### Errore comun
+Si se obiene este error /usr/bin/python3^M : bad interpreter <br/>
+Ejecutar
+> sed -i 's/\r//' LFSshell.py
+
+
 
 
