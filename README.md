@@ -3,7 +3,6 @@ Escrito en python3.
 ## Dependencias
 -Python3<br/>
 -Openssh<br/>
--systemd<br/>
 ## Paso previos para el correcto funcionamiento
 Se deben crear los siguiente  directorios<br/>
 mkdir /var/log<br/>
