@@ -360,7 +360,7 @@ def main():
             write_commands_log("logout")
             break
         elif command[:5] == "demon":
-            shell_demon(command[5:7],command[7:])
+            shell_demon(command[5:7],command[8:])
         elif command[:8]== "transfer":
             shell_transfer(command)
         else:
