@@ -112,9 +112,9 @@ def shell_demon(state,service):
         except OSError as error:
             print(error)
             write_error_log(error)
-    elif state == 'down':
+    elif state == 'dw':
         try:
-            p=Popen(["service", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
+            p=Popen(["systemctl", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
             write_commands_log("demon"+state+" "+service)            
         except OSError as error:
             print(error) 
