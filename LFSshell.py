@@ -109,14 +109,14 @@ def shell_demon(state,service):
     #Funcion para apagar y prender servicios
     if state == 'up':
         try:
-            p=Popen(["systemctl", service, "start"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #Corre el servicio
+            p=Popen(["systemctl","start",service], stdin=PIPE, stdout=PIPE, stderr=PIPE) #Corre el servicio
             write_commands_log("demon"+state+" "+service)            
         except OSError as error:
             print(error)
             write_error_log(error)
     elif state == 'dw':
         try:
-            p=Popen(["systemctl", service, "stop"], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
+            p=Popen(["systemctl","stop",service], stdin=PIPE, stdout=PIPE, stderr=PIPE) #para el servicio
             write_commands_log("demon"+state+" "+service)            
         except OSError as error:
             print(error) 
