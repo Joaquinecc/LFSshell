@@ -25,7 +25,7 @@ Para que sea el shell por defecto de un usuario se debe configurar el archivo /e
 En la linea del usuario la ultima seccion se indica el shell, modificarlo por el  "directorio"/LFSshell.py<br/>
 
 ## Comandos
-copiar       Simula a 'cp'.<br/>
+*copiar*       Simula a 'cp'.<br/>
 mover       simula a 'mv'. <br/>
 renombrar       Renombra un archivo. El segundo parametro es unicamente el nuevo nombre<br/>
 listar       Simula a 'ls'. <br/>
