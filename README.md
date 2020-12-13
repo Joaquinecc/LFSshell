@@ -17,8 +17,8 @@ personaldata -> username_data.log<br/>
 ## Instalacion
 
 git clone https://github.com/Joaquinecc/LFSshell.git <br/>
-cd LFSshell
-./LFSShell
+cd LFSshell<br/>
+./LFSShell<br/>
 
 Para que sea el shell por defecto de un usuario se debe configurar el archivo /etc/passwd <br/>
 En la linea del usuario la ultima seccion se indica el shell, modificarlo por el  "directorio"/LFSshell.py<br/>
