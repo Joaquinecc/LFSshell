@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 import shutil
 import os
 import getpass
@@ -15,30 +14,33 @@ def write_data_user(data,username):
 def invalid_parameter():
         print("invalid parameter")
 def check_user(username,state):
-    #Primero obtenemos us datos personales
-    try:
-        f = open("/var/log/personaldata/{0}_data.log".format(username), "r") #Accedemos a lo
-        hours=f.readline().strip().split('-') #con strip removemos todo los  caracteres blanco 
-        valid_ip=f.readline().strip().split('-')
-        f.close()
-    except OSError as error:
-        print(error)
-        return
-    
     current_ip = socket.gethostbyname(socket.gethostname()) #obtenemos el ip address del usuario
     now = datetime.datetime.now().strftime("%H:%M") #Obtenemos el tiempo del usuario
     #REGISTRAMOS EN LOG
     try:
-        f = open("/var/log/shell/usuario_horarios_log", "a")
-        f.write("{0} {1} {2} {3}\n".format(now,state,username,current_ip)) #Escribimo el ingreso o salida del usuario
+        fu = open("/var/log/shell/usuario_horarios_log", "a")
+        fu.write("{0} {1} {2} {3}\n".format(now,state,username,current_ip)) #Escribimo el ingreso o salida del usuario
         #Checkear si el usuario ingreso fuera de su horario
-        #Formateamos el horario
-        horario_de_entrada=hours[0] if len(hours[0]) == 5 else '0'+ hours[0]
-        horario_de_salida=hours[1] if len(hours[1]) == 5 else '0'+ hours[1]
-        now=now if len(now)== 5 else '0'+now
-        if(horario_de_entrada>now or horario_de_salida<now): #si esta fuera de rango el  ingreso o salida del usuario
-            f.write("Fuera del horario regular en ubicacion:{0} \n".format(current_ip))
-        f.close()
+        
+        #Primero obtenemos us datos personales
+        try:
+            f = open("/var/log/personaldata/{0}_data.log".format(username), "r") #Accedemos a lo
+            hours=f.readline().strip().split('-') #con strip removemos todo los  caracteres blanco 
+            valid_ip=f.readline().strip().split('-')
+            f.close()
+             #Formateamos el horario
+            horario_de_entrada=hours[0] if len(hours[0]) == 5 else '0'+ hours[0]
+            horario_de_salida=hours[1] if len(hours[1]) == 5 else '0'+ hours[1]
+            now=now if len(now)== 5 else '0'+now
+            if(horario_de_entrada>now or horario_de_salida<now): #si esta fuera de rango el  ingreso o salida del usuario
+                fu.write("Fuera del horario regular en ubicacion:{0} \n".format(current_ip))
+            if current_ip not in valid_ip:
+                fu.write("Fuera de su ubicacion establecida con ubicacion:{0} \n".format(current_ip))
+            
+        except OSError as error:
+            print(error)
+            write_error_log(error)
+        fu.close()
     except OSError as error:
         print(error)
         return
@@ -136,8 +138,8 @@ def shell_newpasswd(command):
         write_error_log(error)
 def shell_newuser(command):
     #Comando para crear usuarios
-    #args=adduser <USERNAME> <HORARIO DE ENTRADA-HORARIO DE SALIDA> <IP1>-<IP2>...
-    #EJEMPLO:adduser lfsuser 09:00-16:00 192.168.0.3-193.4.5.1.4
+    #args=usuario <USERNAME> <HORARIO DE ENTRADA-HORARIO DE SALIDA> <IP1>-<IP2>...
+    #EJEMPLO:usuario lfsuser 09:00-16:00 192.168.0.3-193.4.5.1.4
     args=command
     args=args.split(" ")
     try:
@@ -322,7 +324,8 @@ def shell_copy(args):
 
 def main():
     print("Shell start")
-    username=getpass.getuser()
+    # username=getpass.getuser()
+    username="hola3"
     check_user(username,"login")
     while True:
         dir_path = os.path.dirname(os.path.realpath(__file__))

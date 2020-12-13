@@ -42,7 +42,7 @@ En forma general usuario USERNAME HORARIO DE ENTRADA-HORARIO DE SALIDA IP1-IP2-.
 **demondw**      Apaga un demonio<br/>
 **transfer**       Simula scp<br/>
 
-### Errore comun
+### Errores comun
 Si se obiene este error /usr/bin/python3^M : bad interpreter <br/>
 Ejecutar
 > sed -i 's/\r//' LFSshell.py
