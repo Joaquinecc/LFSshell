@@ -324,8 +324,8 @@ def shell_copy(args):
 
 def main():
     print("Shell start")
-    # username=getpass.getuser()
-    username="hola3"
+    username=getpass.getuser()
+    #username="hola3"
     check_user(username,"login")
     while True:
         dir_path = os.path.dirname(os.path.realpath(__file__))
