@@ -25,19 +25,19 @@ Para que sea el shell por defecto de un usuario se debe configurar el archivo /e
 En la linea del usuario la ultima seccion se indica el shell, modificarlo por el  "directorio"/LFSshell.py<br/>
 
 ## Comandos
-*copiar*       Simula a 'cp'.<br/>
-mover       simula a 'mv'. <br/>
-renombrar       Renombra un archivo. El segundo parametro es unicamente el nuevo nombre<br/>
-listar       Simula a 'ls'. <br/>
-creardir       Simula a 'mkdir'.<br/>
-ir       Simula a 'cd'. <br/>
-permisos       Simula a 'chmod'. <br/>
-propietario       Simula a 'chown'. <br/>
-contrasena       Simula a 'passwd'. <br/>
-usuario       Simula a 'useradd' con informacion del timempo de ingreso y salida, y tambine sus ubicaciones.  EJEMPLO:adduser lfsuser 09:00-16:00 192.168.0.3-193.4.5.1.4. En forma general usuario USERNAME HORARIO DE ENTRADA-HORARIO DE SALIDA IP1-IP2-.. <br/>
-exit       Equivalente a 'exit'. <br/>
-demonup      Levanta un demonio<br/>
-demondw      Apaga un demonio<br/>
-transfer       Simula scp<br/>
+**copiar**       Simula a 'cp'.<br/>
+**mover**       simula a 'mv'. <br/>
+**renombrar**       Renombra un archivo. El segundo parametro es unicamente el nuevo nombre<br/>
+**listar**       Simula a 'ls'. <br/>
+**creardir**       Simula a 'mkdir'.<br/>
+**ir**       Simula a 'cd'. <br/>
+**permisos**       Simula a 'chmod'. <br/>
+**propietario**       Simula a 'chown'. <br/>
+**contrasena**       Simula a 'passwd'. <br/>
+**usuario**       Simula a 'useradd' con informacion del timempo de ingreso y salida, y tambine sus ubicaciones.  EJEMPLO:adduser lfsuser 09:00-16:00 192.168.0.3-193.4.5.1.4. En forma general usuario USERNAME HORARIO DE ENTRADA-HORARIO DE SALIDA IP1-IP2-.. <br/>
+**exit**       Equivalente a 'exit'. <br/>
+**demonup**    Levanta un demonio<br/>
+**demondw**      Apaga un demonio<br/>
+**transfer**       Simula scp<br/>
 
 
