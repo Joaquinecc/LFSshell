@@ -127,7 +127,7 @@ def shell_newpasswd(command):
     params=command
     command=command.replace("contraseña","passwd",1)
     command=command.replace("contrasena","passwd",1)
-    command='sudo '+command
+    # command='sudo '+command
     try:
         os.system(command)
         write_commands_log(params)
@@ -146,7 +146,7 @@ def shell_newuser(command):
         locations=args[3]
         data="{0}\n{1}".format(timerange,locations)
         try:
-            os.system("sudo useradd {}".format(username))
+            os.system("useradd {}".format(username))
             print("user {0} created".format(username))
             write_data_user(data,username)
             write_commands_log(command)
@@ -155,7 +155,7 @@ def shell_newuser(command):
             write_error_log(error)
     except:
         try:
-            command='sudo '+command
+            # command='sudo '+command
             os.system(command.replace('usuario','useradd',1))
         except OSError as error:
             print(error)
